@@ -1,0 +1,109 @@
+#login {
+    display: flex;
+
+    img {
+        max-height: 100vw;
+        width: 672px;
+        background-size: cover;
+        filter: saturate(2);
+        background-size: cover;
+        background-position: 50%;
+        display: initial;
+    }
+
+    .auth {
+        width: 100%;
+        margin-left: 100px;
+        padding: 20px;
+        position: relative;
+
+        .section1 {
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            margin-bottom: 50px;
+            margin-right: 50px;
+
+            button {
+                width: 100px;
+                height: 40px;
+                background-color: red;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                position: relative;
+                left: 10px;
+                cursor: pointer;
+            }
+        }
+
+        .section2 {
+            width: 100%;
+            height: 70vh;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+
+            h1 {
+                font-family: "Poppins";
+                font-weight: 700;
+                width: 350px;
+                font-size: 40px;
+            }
+
+            .instruction_text {
+                font-size: 18px;
+                width: 400px;
+            }
+
+            label {
+                display: block;
+                font-size: 15px;
+                color: #94979e;
+                display: block;
+                margin-top: 20px;
+            }
+
+            input {
+                width: 409px;
+                font-size: 18px;
+                padding: 11.2px 16px;
+                letter-spacing: normal;
+                line-height: normal;
+                height: 24px;
+                margin-top: 7px;
+                border: 1px solid #94979e;
+                border-radius: 5px;
+            }
+
+            button {
+                display: block;
+                background-color: #e94949;
+                color: #fff;
+                border: none;
+                line-height: 18px;
+                font-weight: 500;
+                width: 409px;
+                height: 40px;
+                border-radius: 5px;
+                margin-left: 10px;
+                margin-bottom: 20px;
+                margin-top: 20px;
+            }
+
+            .error {
+                color: red;
+            }
+
+            .end_text {
+                width: 400px;
+                margin: 0 0 32px;
+                text-align: center;
+                font-size: 13px;
+                color: #000;
+                opacity: 0.6;
+                line-height: normal;
+            }
+        }
+    }
+}
