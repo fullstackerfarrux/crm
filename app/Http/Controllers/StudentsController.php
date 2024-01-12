@@ -2,12 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Core\ApiItems;
+use App\Http\Validations\StudentRequest;
 use App\Models\Group;
 use App\Models\Students;
+use Domain\Entities\Group as EntitiesGroup;
+use Domain\Entities\Student;
 use Illuminate\Http\Request;
 
 class StudentsController extends Controller
 {
+    private Student $student;
+    private EntitiesGroup $group;
+
+    public function __construct(Student $student, EntitiesGroup $group)
+    {
+        $this->student = $student;
+        $this->group = $group;
+    }
+
     public function index()
     {
         $stacks = Group::distinct('group_stack')->pluck('group_stack');
@@ -16,22 +29,16 @@ class StudentsController extends Controller
         return view('students')->with(['stacks' => $stacks, 'students' => $students]);
     }
 
-    public function create_store(Request $request)
+    public function create_store(StudentRequest $request)
     {
-        $credentials = $request->validate([
-            'student_name' => "required",
-            'parent_name' => "required",
-            'stack' => "required",
-            'student_phone' => "required|unique:students,student_phone|regex:/^\+998\d{9}$/",
-            'parent_phone' => "required|unique:students,parent_phone|regex:/^\+998\d{9}$/",
-        ]);
+        $request->validated();
 
-        Students::create([
-            'student_name' => $request->student_name,
-            'parent_name' => $request->parent_name,
-            'stack' => $request->stack,
-            'student_phone' => $request->student_phone,
-            'parent_phone' => $request->parent_phone,
+        $this->student->insertStudent([
+            ApiItems::STUDENT_NAME->value => $request->student_name,
+            ApiItems::PARENT_NAME->value => $request->parent_name,
+            ApiItems::STACK->value => $request->stack,
+            ApiItems::STUDENT_PHONE->value => $request->student_phone,
+            ApiItems::PARENT_PHONE->value => $request->parent_phone,
         ]);
 
         return redirect()->route('students_index');
@@ -40,9 +47,13 @@ class StudentsController extends Controller
     public function check_time(Request $request)
     {
 
-        $getStack = Students::where('id', $request->id)->first();
+        $getStack = $this->student
+            ->whereStudentId($request->id)
+            ->first();
 
-        $checkTime = Group::where('group_stack', $getStack->stack)->where('group_time', $request->group_time)
+        $checkTime = $this->group
+            ->whereGroupStack('group_stack', $getStack->stack)
+            ->whereGroupTime('group_time', $request->group_time)
             ->get();
 
         if (count($checkTime) > 0) {
@@ -60,7 +71,10 @@ class StudentsController extends Controller
 
     public function remove($id)
     {
-        $student = Students::find($id);
+        $student = $this->student
+            ->whereStudentId($id)
+            ->first();
+
         $student->delete();
 
         return redirect()->route('students_index');

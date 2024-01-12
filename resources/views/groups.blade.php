@@ -74,15 +74,16 @@
                             <a class="card" href="{{ route('group_show', ['id' => $group->id]) }}">
                                 <div class="title">{{ $group->group_stack }}</div>
                                 <div class="card-contact">
-                                    <img src="storage/{{ $group->teacher->teacher_photo }}" alt="niggah" />
+                                    <img src="storage/{{ $group->teacher->teacher_photo ?? 'photos/user.png' }}"
+                                        alt="niggah" />
                                     <div class="number">
                                         <div>
                                             <strong>O'qituvchi:</strong>
-                                            <p> {{ $group->teacher->teacher_name }} </p>
+                                            <p> {{ $group->teacher->teacher_name ?? 'Farrrux' }} </p>
                                         </div>
                                         <div>
                                             <strong>Tel raqam:</strong>
-                                            <p> {{ $group->teacher->teacher_phone }} </p>
+                                            <p> {{ $group->teacher->teacher_phone ?? '99890' }} </p>
                                         </div>
                                     </div>
                                 </div>
@@ -97,7 +98,7 @@
                                     </div>
                                     <div class="detail_info">
                                         <strong>O'quvchilar soni:</strong>
-                                        <p>{{ count($group->student) }}ta</p>
+                                        <p>{{ 1 }}ta</p>
                                     </div>
                                 </div>
                             </a>

@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Group;
-use App\Models\Teachers;
-use Illuminate\Http\Request;
+use App\Core\ApiItems;
+use Domain\Entities\Group;
+use Domain\Entities\Teacher;
+use App\Http\Validations\GroupRequest;
+
 
 class GroupsController extends Controller
 {
+    private Group $group;
+    private Teacher $teacher;
+
+    public function __construct(Group $group, Teacher $teacher)
+    {
+        $this->group = $group;
+        $this->teacher = $teacher;
+    }
 
     public function index()
     {
@@ -15,39 +25,35 @@ class GroupsController extends Controller
         return view('groups')->with(['groups' => $groups]);
     }
 
-    public function create_store(Request $request)
+    public function create_store(GroupRequest $request)
     {
-        $cerdentails = $request->validate([
-            'group_stack' => 'required|string',
-            'group_day' => 'required|string',
-            'group_time' => 'required|string',
-            'teacher_phone' => 'required|unique:teachers,teacher_phone|regex:/^\+998\d{9}$/'
-        ]);
+        $request->validated();
 
-        $findTeacher = Teachers::where(['teacher_phone' => $request->teacher_phone])->first();
+        $findTeacher = $this->teacher->whereTeacher($request->teacher_phone)->get();
 
-        if (!$findTeacher) {
+        if ($findTeacher->count() == 0) {
             $path = $request->file('teacher_photo')->store('public/photos');
             $resPath = str_replace("public/photos", "photos", $path);
 
-            $create_teacher = Teachers::create([
-                'teacher_name' => $request->teacher_name,
-                'teacher_phone' => $request->teacher_phone,
-                'teacher_photo' => $resPath,
+
+            $create_teacher = $this->teacher->insertTeacher([
+                ApiItems::TEACHER_NAME->value => $request->teacher_name,
+                ApiItems::TEACHER_PHONE->value => $request->teacher_phone,
+                ApiItems::TEACHER_PHOTO->value => $resPath,
             ]);
 
-            Group::create([
-                'group_stack' => $request->group_stack,
-                'group_day' => $request->group_day,
-                'group_time' => $request->group_time,
-                'teacher_id' => $create_teacher->id,
+            $this->group->insertGroup([
+                ApiItems::GROUP_STACK->value => $request->group_stack,
+                ApiItems::GROUP_DAY->value => $request->group_day,
+                ApiItems::GROUP_TIME->value => $request->group_time,
+                ApiItems::TEACHER_ID->value => $create_teacher->id,
             ]);
         } else {
-            Group::create([
-                'group_stack' => $request->group_stack,
-                'group_day' => $request->group_day,
-                'group_time' => $request->group_time,
-                'teacher_id' => $findTeacher->id,
+            $this->group->insertGroup([
+                ApiItems::GROUP_STACK->value => $request->group_stack,
+                ApiItems::GROUP_DAY->value => $request->group_day,
+                ApiItems::GROUP_TIME->value => $request->group_time,
+                ApiItems::TEACHER_ID->value => $findTeacher[0]->id,
             ]);
         }
 
@@ -56,7 +62,7 @@ class GroupsController extends Controller
 
     public function show($id)
     {
-        $group = Group::where('id', $id)->get();
+        $group = $this->group->whereGroupId($id)->get();
         return view('group')->with(['group' => $group[0]]);
     }
 }
