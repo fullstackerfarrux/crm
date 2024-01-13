@@ -8,17 +8,20 @@ use App\Models\Group;
 use App\Models\Students;
 use Domain\Entities\Group as EntitiesGroup;
 use Domain\Entities\Student;
+use Domain\Services\StudentService;
 use Illuminate\Http\Request;
 
 class StudentsController extends Controller
 {
     private Student $student;
     private EntitiesGroup $group;
+    private StudentService $student_service;
 
-    public function __construct(Student $student, EntitiesGroup $group)
+    public function __construct(Student $student, EntitiesGroup $group, StudentService $student_service)
     {
         $this->student = $student;
         $this->group = $group;
+        $this->student_service = $student_service;
     }
 
     public function index()
@@ -33,7 +36,7 @@ class StudentsController extends Controller
     {
         $request->validated();
 
-        $this->student->insertStudent([
+        $this->student_service->create([
             ApiItems::STUDENT_NAME->value => $request->student_name,
             ApiItems::PARENT_NAME->value => $request->parent_name,
             ApiItems::STACK->value => $request->stack,

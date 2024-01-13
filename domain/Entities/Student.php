@@ -25,7 +25,7 @@ use Domain\Builders\StudentBuilder;
 class Student extends Entity
 {
     protected $table = "students";
-    protected $fillable = ['student_name', 'parent_name', 'stack', 'student_phone', 'parent_phone'];
+    protected $guarded = [];
 
     public function newEloquentBuilder($query): StudentBuilder
     {

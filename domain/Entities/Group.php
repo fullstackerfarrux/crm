@@ -26,7 +26,7 @@ use Domain\Builders\GroupBuilder;
 class Group extends Entity
 {
     protected $table = "groups";
-    protected $fillable = ['group_stack', 'group_day', 'group_time', 'teacher_id'];
+    protected $guarded = [];
 
     public function newEloquentBuilder($query): GroupBuilder
     {
