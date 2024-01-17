@@ -51,3 +51,5 @@ Route::get('/students', [StudentsController::class, 'index'])->middleware('Check
 Route::post('/students/create', [StudentsController::class, 'create_store'])->name('students_create');
 Route::get('/students/edit', [StudentsController::class, 'check_time'])->name('students_edit');
 Route::post('/students/{id}/destroy', [StudentsController::class, 'remove'])->name('students_destroy');
+
+// <-- Its just test for create pull request --> 
